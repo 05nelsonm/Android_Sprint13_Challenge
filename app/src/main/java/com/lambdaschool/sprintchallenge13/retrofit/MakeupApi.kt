@@ -15,11 +15,11 @@ import java.util.concurrent.TimeUnit
 interface MakeupApi {
 
     @GET("products.json")
-    fun getMakeup(@Query("brand") brand: String): Single<Makeup>
+    fun getMakeup(@Query("brand") brand: String): Single<Array<Makeup>>
 
     class Factory {
         companion object {
-            val BASE_URL = "http://makeup-api.herokuapp.com/api/v1/"
+            val BASE_URL = "https://makeup-api.herokuapp.com/api/v1/"
             val gson = Gson()
             val logger = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BASIC
