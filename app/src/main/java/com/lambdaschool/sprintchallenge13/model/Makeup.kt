@@ -1,6 +1,6 @@
 package com.lambdaschool.sprintchallenge13.model
 
-data class MakeupApi (
+data class Makeup (
     val id: Int,
     val brand: String,
     val name: String,
