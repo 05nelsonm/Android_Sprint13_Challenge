@@ -3,12 +3,14 @@ package com.lambdaschool.sprintchallenge13
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lambdaschool.sprintchallenge13.adapter.MakeupRecyclerViewAdapter
 import com.lambdaschool.sprintchallenge13.retrofit.MakeupApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Retrofit
@@ -30,14 +32,23 @@ class MainActivity : AppCompatActivity() {
         button_search.setOnClickListener {
             val searchedFor = edit_text_search.text.toString()
 
-            disposable = makeupService.getMakeup(searchedFor)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ brand ->
-                    recycler_view.adapter = MakeupRecyclerViewAdapter(brand)
-                }, { t ->
-                    Log.i("Retrofit - ", "$t", t)
-                })
+            if (searchedFor.isNotEmpty()) {
+
+                disposable = makeupService.getMakeup(searchedFor)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ brand ->
+                        if (brand.isNotEmpty()) {
+                            recycler_view.adapter = MakeupRecyclerViewAdapter(brand)
+                        } else {
+                            Toast.makeText(this, "Brand not found", Toast.LENGTH_SHORT).show()
+                        }
+                    }, { t ->
+                        Log.i("Retrofit - ", "$t", t)
+                    })
+            } else {
+                Toast.makeText(this, "Please enter a brand", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
