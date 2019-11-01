@@ -14,17 +14,20 @@ import io.reactivex.rxkotlin.Observables
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Retrofit
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity: AppCompatActivity() {
 
-    lateinit var disposable: Disposable
+    private lateinit var disposable: Disposable
+
+    @Inject
     lateinit var makeupService: MakeupApi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        makeupService = MakeupApi.Factory.create()
+        (application as App).appComponent.inject(this)
 
         recycler_view.setHasFixedSize(true)
         recycler_view.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
