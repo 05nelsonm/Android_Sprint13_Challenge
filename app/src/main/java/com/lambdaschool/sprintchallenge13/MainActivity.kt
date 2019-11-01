@@ -3,6 +3,7 @@ package com.lambdaschool.sprintchallenge13
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,8 @@ class MainActivity: AppCompatActivity() {
 
             if (searchedFor.isNotEmpty()) {
 
+                progress_bar.visibility = View.VISIBLE
+
                 disposable = makeupService.getMakeup(searchedFor)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -46,6 +49,7 @@ class MainActivity: AppCompatActivity() {
                         } else {
                             Toast.makeText(this, "Brand not found", Toast.LENGTH_SHORT).show()
                         }
+                        progress_bar.visibility = View.INVISIBLE
                     }, { t ->
                         Log.i("Retrofit - ", "$t", t)
                     })
