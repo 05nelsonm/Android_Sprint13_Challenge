@@ -3,6 +3,9 @@ package com.lambdaschool.sprintchallenge13
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.lambdaschool.sprintchallenge13.adapter.MakeupRecyclerViewAdapter
 import com.lambdaschool.sprintchallenge13.retrofit.MakeupApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -21,18 +24,29 @@ class MainActivity : AppCompatActivity() {
 
         makeupService = MakeupApi.Factory.create()
 
-        disposable = makeupService.getMakeup("maybelline")
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ makeup ->
-                text_view.text = "${makeup[9].name}\n${makeup[3].name}\n${makeup[5].name}"
-            }, {t ->
-                Log.i("Retrofit - ", "$t", t)
-            })
+        recycler_view.setHasFixedSize(true)
+        recycler_view.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+
+        button_search.setOnClickListener {
+            val searchedFor = edit_text_search.text.toString()
+
+            disposable = makeupService.getMakeup(searchedFor)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ brand ->
+                    recycler_view.adapter = MakeupRecyclerViewAdapter(brand)
+                }, { t ->
+                    Log.i("Retrofit - ", "$t", t)
+                })
+        }
     }
 
     override fun onDestroy() {
         disposable.dispose()
         super.onDestroy()
+    }
+
+    private fun showList() {
+
     }
 }
